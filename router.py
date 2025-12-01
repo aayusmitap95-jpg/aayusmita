@@ -5,7 +5,9 @@ from urllib.parse import urlparse
 from controllers.students import (
      get_all_students,
         get_student,
-        create_student
+        create_student,
+        update_student,
+        delete_student
 
 )
 
@@ -36,7 +38,17 @@ class StudentRouter(BaseHTTPRequestHandler):
         if self.path == "/api/students":
             return create_student(self)
         return send_404(self)
-
+   
+   def do_PUT(self):
+       if self.path.startswith("/api/students/"):
+           student_id = int(self.path.split("/")[-1])
+           return update_student(self, student_id)
+       return send_404(self)
+   def do_DELETE(self):
+       if self.path.startswith("/api/students/"):
+           student_id = int(self.path.split("/")[-1])
+           return delete_student(self, student_id)
+       return send_404(self)
    def log_message(self, format, *args):
        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
        print(f"[{timestamp}] [Server] {format % args}")
